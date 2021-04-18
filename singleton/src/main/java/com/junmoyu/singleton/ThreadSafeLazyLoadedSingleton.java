@@ -2,6 +2,8 @@ package com.junmoyu.singleton;
 
 import com.junmoyu.singleton.constant.SingletonConstants;
 
+import java.lang.reflect.Constructor;
+
 /**
  * 懒汉式单例模式 - 线程安全
  * 这种实现也被叫做双重校验锁（Double Check Locking）
@@ -39,7 +41,7 @@ public class ThreadSafeLazyLoadedSingleton {
      */
     public static ThreadSafeLazyLoadedSingleton getInstance() {
         if (INSTANCE == null) {
-            synchronized (ThreadSafeLazyLoadedSingleton.class){
+            synchronized (ThreadSafeLazyLoadedSingleton.class) {
                 if (INSTANCE == null) {
                     INSTANCE = new ThreadSafeLazyLoadedSingleton();
                 }
@@ -61,5 +63,17 @@ public class ThreadSafeLazyLoadedSingleton {
         for (int i = 0; i < SingletonConstants.THREADS_NUMBER; i++) {
             new Thread(() -> System.out.println(ThreadSafeLazyLoadedSingleton.getInstance().toString())).start();
         }
+
+        // 反射测试
+        // 通过反射的方式直接调用私有构造器（通过在构造器里抛出异常可以解决此漏洞）
+        Class<ThreadSafeLazyLoadedSingleton> clazz = (Class<ThreadSafeLazyLoadedSingleton>)
+                Class.forName("com.junmoyu.singleton.ThreadSafeLazyLoadedSingleton");
+        Constructor<ThreadSafeLazyLoadedSingleton> constructor = clazz.getDeclaredConstructor(null);
+
+        ThreadSafeLazyLoadedSingleton eagerlySingleton1 = constructor.newInstance();
+        ThreadSafeLazyLoadedSingleton eagerlySingleton2 = constructor.newInstance();
+
+        System.out.println(eagerlySingleton1.toString());
+        System.out.println(eagerlySingleton2.toString());
     }
 }

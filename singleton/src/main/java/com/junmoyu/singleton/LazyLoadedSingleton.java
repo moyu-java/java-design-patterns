@@ -2,6 +2,8 @@ package com.junmoyu.singleton;
 
 import com.junmoyu.singleton.constant.SingletonConstants;
 
+import java.lang.reflect.Constructor;
+
 /**
  * 懒汉式单例模式
  *
@@ -25,16 +27,16 @@ public class LazyLoadedSingleton {
      */
     private LazyLoadedSingleton() {
         System.out.println("LazyLoadedSingleton 被实例化");
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         // 防止通过反射进行实例化
         if (INSTANCE == null) {
             INSTANCE = this;
         } else {
             throw new IllegalStateException("Already initialized.");
+        }
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -43,17 +45,15 @@ public class LazyLoadedSingleton {
      *
      * @return 单例实例
      */
-//    public static LazyLoadedSingleton getInstance() {
-//        if (INSTANCE == null) {
-//            INSTANCE = new LazyLoadedSingleton();
-//        }
-//        return INSTANCE;
-//    }
+    public static LazyLoadedSingleton getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new LazyLoadedSingleton();
+        }
+        return INSTANCE;
+    }
 
     /**
-     * 线程安全的实例化（要加 volatile），但每次获取实例都会加锁，严重影响并发性能
-     * 且 INSTANCE 常量必须添加 volatile 关键字才能避免指令重排，保持线程可见性
-     * 而 volatile 在 JDK 1.5 之后才支持
+     * 线程安全的实例化，但每次获取实例都会加锁，严重影响并发性能
      *
      * @return 单例实例
      */
@@ -71,16 +71,16 @@ public class LazyLoadedSingleton {
      *
      * @return 单例实例
      */
-    public static LazyLoadedSingleton getInstance() {
-        if (INSTANCE == null) {
-            synchronized (LazyLoadedSingleton.class){
-                if (INSTANCE == null) {
-                    INSTANCE = new LazyLoadedSingleton();
-                }
-            }
-        }
-        return INSTANCE;
-    }
+//    public static LazyLoadedSingleton getInstance() {
+//        if (INSTANCE == null) {
+//            synchronized (LazyLoadedSingleton.class){
+//                if (INSTANCE == null) {
+//                    INSTANCE = new LazyLoadedSingleton();
+//                }
+//            }
+//        }
+//        return INSTANCE;
+//    }
 
     @Override
     public String toString() {
@@ -95,5 +95,16 @@ public class LazyLoadedSingleton {
         for (int i = 0; i < SingletonConstants.THREADS_NUMBER; i++) {
             new Thread(() -> System.out.println(LazyLoadedSingleton.getInstance().toString())).start();
         }
+
+        // 反射测试
+        // 通过反射的方式直接调用私有构造器（通过在构造器里抛出异常可以解决此漏洞）
+        Class<LazyLoadedSingleton> clazz = (Class<LazyLoadedSingleton>) Class.forName("com.junmoyu.singleton.LazyLoadedSingleton");
+        Constructor<LazyLoadedSingleton> constructor = clazz.getDeclaredConstructor(null);
+
+        LazyLoadedSingleton lazyLoadedSingleton1 = constructor.newInstance();
+        LazyLoadedSingleton lazyLoadedSingleton2 = constructor.newInstance();
+
+        System.out.println(lazyLoadedSingleton1.toString());
+        System.out.println(lazyLoadedSingleton2.toString());
     }
 }
