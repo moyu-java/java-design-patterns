@@ -1,4 +1,6 @@
-package com.junmoyu.singleton;
+package com.junmoyu.singleton.serializable;
+
+import java.io.Serializable;
 
 /**
  * 懒汉式 - 线程安全，延迟加载
@@ -7,7 +9,7 @@ package com.junmoyu.singleton;
  * @author moyu.jun
  * @date 2021/4/18
  */
-public class ThreadSafeLazyLoadedSingleton {
+public class ThreadSafeLazyLoadedSingleton implements Serializable {
 
     /**
      * 加入 volatile 保证线程可见性，防止指令重排导致实例被多次实例化
@@ -39,6 +41,16 @@ public class ThreadSafeLazyLoadedSingleton {
         if (INSTANCE == null) {
             INSTANCE = new ThreadSafeLazyLoadedSingleton();
         }
+        return INSTANCE;
+    }
+
+    /**
+     * 如果有序列化需求，需要添加此方法以防止反序列化时重新创建新实例
+     * 如无序列化需求可不加，同时去除 implements Serializable
+     *
+     * @return 单例实例
+     */
+    private Object readResolve() {
         return INSTANCE;
     }
 }

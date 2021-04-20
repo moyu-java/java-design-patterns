@@ -1,4 +1,6 @@
-package com.junmoyu.singleton;
+package com.junmoyu.singleton.serializable;
+
+import java.io.Serializable;
 
 /**
  * 饿汉式单例模式 - 线程安全
@@ -7,7 +9,7 @@ package com.junmoyu.singleton;
  * @author moyu.jun
  * @date 2021/4/18
  */
-public class EagerlySingleton {
+public class EagerlySingleton implements Serializable {
 
     /**
      * 初始化静态实例
@@ -33,6 +35,16 @@ public class EagerlySingleton {
      * @return 单例实例
      */
     public static EagerlySingleton getInstance() {
+        return INSTANCE;
+    }
+
+    /**
+     * 如果有序列化需求，需要添加此方法以防止反序列化时重新创建新实例
+     * 如无序列化需求可不加，同时去除 implements Serializable
+     *
+     * @return 单例实例
+     */
+    private Object readResolve() {
         return INSTANCE;
     }
 }

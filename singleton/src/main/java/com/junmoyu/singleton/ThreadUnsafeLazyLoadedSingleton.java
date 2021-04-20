@@ -1,24 +1,20 @@
 package com.junmoyu.singleton;
 
 /**
- * 懒汉式 - 线程安全，延迟加载
- * 但因为 getInstance() 方法加锁，导致多线程下性能较差，不推荐使用
+ * 懒汉式 - 线程不安全
+ * 仅适应于单线程
  *
- * @author moyu.jun
- * @date 2021/4/18
+ * @author James
+ * @date 2021/4/20
  */
-public class ThreadSafeLazyLoadedSingleton {
+public class ThreadUnsafeLazyLoadedSingleton {
 
-    /**
-     * 加入 volatile 保证线程可见性，防止指令重排导致实例被多次实例化
-     * 否则线程不安全
-     */
-    private volatile static ThreadSafeLazyLoadedSingleton INSTANCE = null;
+    private static ThreadUnsafeLazyLoadedSingleton INSTANCE = null;
 
     /**
      * 私有构造方法
      */
-    private ThreadSafeLazyLoadedSingleton() {
+    private ThreadUnsafeLazyLoadedSingleton() {
         // 防止通过反射进行实例化从而破坏单例
         // 如不需要删除即可
         if (INSTANCE != null) {
@@ -35,9 +31,9 @@ public class ThreadSafeLazyLoadedSingleton {
      *
      * @return 单例实例
      */
-    public static synchronized ThreadSafeLazyLoadedSingleton getInstance() {
+    public static ThreadUnsafeLazyLoadedSingleton getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new ThreadSafeLazyLoadedSingleton();
+            INSTANCE = new ThreadUnsafeLazyLoadedSingleton();
         }
         return INSTANCE;
     }

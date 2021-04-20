@@ -1,24 +1,27 @@
-package com.junmoyu.singleton;
+package com.junmoyu.singleton.serializable;
+
+import java.io.Serializable;
 
 /**
  * 懒汉式 - 线程安全，延迟加载
- * 但因为 getInstance() 方法加锁，导致多线程下性能较差，不推荐使用
+ * 也叫双重校验锁
+ * 仅使用与 JDK 1.5 以上，因为 JDK 1.5 以上才支持 volatile 关键字
  *
  * @author moyu.jun
  * @date 2021/4/18
  */
-public class ThreadSafeLazyLoadedSingleton {
+public class DoubleCheckLockingSingleton implements Serializable {
 
     /**
      * 加入 volatile 保证线程可见性，防止指令重排导致实例被多次实例化
      * 否则线程不安全
      */
-    private volatile static ThreadSafeLazyLoadedSingleton INSTANCE = null;
+    private volatile static DoubleCheckLockingSingleton INSTANCE = null;
 
     /**
      * 私有构造方法
      */
-    private ThreadSafeLazyLoadedSingleton() {
+    private DoubleCheckLockingSingleton() {
         // 防止通过反射进行实例化从而破坏单例
         // 如不需要删除即可
         if (INSTANCE != null) {
@@ -35,10 +38,24 @@ public class ThreadSafeLazyLoadedSingleton {
      *
      * @return 单例实例
      */
-    public static synchronized ThreadSafeLazyLoadedSingleton getInstance() {
+    public static DoubleCheckLockingSingleton getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new ThreadSafeLazyLoadedSingleton();
+            synchronized (DoubleCheckLockingSingleton.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new DoubleCheckLockingSingleton();
+                }
+            }
         }
+        return INSTANCE;
+    }
+
+    /**
+     * 如果有序列化需求，需要添加此方法以防止反序列化时重新创建新实例
+     * 如无序列化需求可不加，同时去除 implements Serializable
+     *
+     * @return 单例实例
+     */
+    private Object readResolve() {
         return INSTANCE;
     }
 }

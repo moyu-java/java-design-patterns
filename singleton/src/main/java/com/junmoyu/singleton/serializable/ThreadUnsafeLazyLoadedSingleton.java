@@ -1,24 +1,22 @@
-package com.junmoyu.singleton;
+package com.junmoyu.singleton.serializable;
+
+import java.io.Serializable;
 
 /**
- * 懒汉式 - 线程安全，延迟加载
- * 但因为 getInstance() 方法加锁，导致多线程下性能较差，不推荐使用
+ * 懒汉式 - 线程不安全
+ * 仅适应于单线程
  *
- * @author moyu.jun
- * @date 2021/4/18
+ * @author James
+ * @date 2021/4/20
  */
-public class ThreadSafeLazyLoadedSingleton {
+public class ThreadUnsafeLazyLoadedSingleton implements Serializable {
 
-    /**
-     * 加入 volatile 保证线程可见性，防止指令重排导致实例被多次实例化
-     * 否则线程不安全
-     */
-    private volatile static ThreadSafeLazyLoadedSingleton INSTANCE = null;
+    private static ThreadUnsafeLazyLoadedSingleton INSTANCE = null;
 
     /**
      * 私有构造方法
      */
-    private ThreadSafeLazyLoadedSingleton() {
+    private ThreadUnsafeLazyLoadedSingleton() {
         // 防止通过反射进行实例化从而破坏单例
         // 如不需要删除即可
         if (INSTANCE != null) {
@@ -35,10 +33,21 @@ public class ThreadSafeLazyLoadedSingleton {
      *
      * @return 单例实例
      */
-    public static synchronized ThreadSafeLazyLoadedSingleton getInstance() {
+    public static ThreadUnsafeLazyLoadedSingleton getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new ThreadSafeLazyLoadedSingleton();
+            INSTANCE = new ThreadUnsafeLazyLoadedSingleton();
         }
         return INSTANCE;
     }
+
+    /**
+     * 如果有序列化需求，需要添加此方法以防止反序列化时重新创建新实例
+     * 如无序列化需求可不加，同时去除 implements Serializable
+     *
+     * @return 单例实例
+     */
+    private Object readResolve() {
+        return INSTANCE;
+    }
+
 }

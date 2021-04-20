@@ -1,4 +1,4 @@
-package com.junmoyu.singleton;
+package com.junmoyu.singleton.serializable;
 
 /**
  * 枚举的单例实现 - 线程安全

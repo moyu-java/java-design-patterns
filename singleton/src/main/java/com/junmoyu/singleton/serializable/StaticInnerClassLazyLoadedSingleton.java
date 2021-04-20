@@ -1,4 +1,6 @@
-package com.junmoyu.singleton;
+package com.junmoyu.singleton.serializable;
+
+import java.io.Serializable;
 
 /**
  * 静态内部类 - 线程安全，延迟加载
@@ -7,7 +9,7 @@ package com.junmoyu.singleton;
  * @author moyu.jun
  * @date 2021/4/18
  */
-public class StaticInnerClassLazyLoadedSingleton {
+public class StaticInnerClassLazyLoadedSingleton implements Serializable {
 
     /**
      * 私有构造方法
@@ -37,4 +39,16 @@ public class StaticInnerClassLazyLoadedSingleton {
     private static class HelperHolder {
         private static final StaticInnerClassLazyLoadedSingleton INSTANCE = new StaticInnerClassLazyLoadedSingleton();
     }
+
+
+    /**
+     * 如果有序列化需求，需要添加此方法以防止反序列化时重新创建新实例
+     * 如无序列化需求可不加，同时去除 implements Serializable
+     *
+     * @return 单例实例
+     */
+    private Object readResolve() {
+        return getInstance();
+    }
+
 }
