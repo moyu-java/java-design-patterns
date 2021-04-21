@@ -47,7 +47,8 @@ ApplicationContext、数据库中的连接池等也都是单例模式。
 
 ```java
 /**
- * 基于枚举的单例实现 - 线程安全
+ * 枚举的单例实现 - 线程安全
+ * 绝对防止多实例化，即使是在面反序列化和反射攻击时
  *
  * @author moyu.jun
  * @date 2021/4/18
@@ -68,26 +69,30 @@ public enum EnumSingleton {
     public void setName(String name) {
         this.name = name;
     }
-
-    @Override
-    public String toString() {
-        // 打印类名，以及类的内存地址
-        return getClass().getName() + "@" + hashCode();
-    }
-
-    public static void main(String[] args) {
-        // 多线程测试
-        for (int i = 0; i < SingletonConstants.THREADS_NUMBER; i++) {
-            new Thread(() -> System.out.println(EnumSingleton.INSTANCE.toString())).start();
-        }
-        // 方法调用
-        EnumSingleton.INSTANCE.setName("君莫语");
-        System.out.println(EnumSingleton.INSTANCE.getName());
-    }
 }
 ```
 
 > `Effective Java` 书中也推荐使用这种单例模式。
+
+我们可以在 `Application` 类中进行测试，代码如下：
+
+```java
+public class Application {
+
+    public static void main(String[] args) throws Exception {
+        System.out.println("代码启动");
+        Thread.sleep(1000);
+        // 多线程测试
+        for (int i = 0; i < SingletonConstants.THREADS_NUMBER; i++) {
+            new Thread(() -> printObject(EagerlySingleton.getInstance())).start();
+        }
+    }
+    
+    private static void printObject(Object obj) {
+        System.out.println("对象内存地址：" + obj.getClass().getSimpleName() + "@" + obj.hashCode());
+    }
+}
+```
 
 ### 饿汉式单例模式
 
@@ -572,7 +577,6 @@ public class EagerlySingleton implements Serializable {
 //    private Object readResolve() {
 //        return INSTANCE;
 //    }
-
     public static void main(String[] args) throws Exception {
 
         // 反序列化测试
@@ -608,7 +612,8 @@ public class EagerlySingleton implements Serializable {
 5. 方法加锁懒汉式 - 线程安全，但性能差
 6. 双重校验锁懒汉式 - 线程安全
 
-且除了枚举实现的单例外，其他均有反射及序列化会破坏单例的情况。那么综合来看的话，枚举实现的单例是最优的方案，也是 `Effective Java` 书中推荐的方案。然而在 Java 及一些框架的源码中使用枚举单例的例子很少，不知道是为什么，可能是我看的源码还不够多吧。
+且除了枚举实现的单例外，其他均有反射及序列化会破坏单例的情况。那么综合来看的话，枚举实现的单例是最优的方案，也是 `Effective Java` 书中推荐的方案。然而在 Java
+及一些框架的源码中使用枚举单例的例子很少，不知道是为什么，可能是我看的源码还不够多吧。
 
 因为枚举实现的单例模式其实也属于饿汉式，所以如果在实例化时需要执行耗时操作的话，则不建议使用。
 

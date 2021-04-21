@@ -1,7 +1,5 @@
 package com.junmoyu.singleton;
 
-import com.junmoyu.singleton.constant.SingletonConstants;
-
 import java.io.*;
 import java.lang.reflect.Constructor;
 
@@ -13,11 +11,16 @@ import java.lang.reflect.Constructor;
  */
 public class Application {
 
+    private static final int THREADS_NUMBER = 10;
+
     public static void main(String[] args) throws Exception {
+
+        enumSingletonTest();
+
         System.out.println("代码启动");
         Thread.sleep(1000);
         // 多线程测试
-        for (int i = 0; i < SingletonConstants.THREADS_NUMBER; i++) {
+        for (int i = 0; i < THREADS_NUMBER; i++) {
             new Thread(() -> printObject(EagerlySingleton.getInstance())).start();
         }
 
@@ -49,9 +52,26 @@ public class Application {
         System.out.println("反序列化对象2：" + newInstance.toString());
     }
 
+    /**
+     * 枚举单例测试
+     */
+    private static void enumSingletonTest() throws Exception {
+        System.out.println("代码启动");
+        Thread.sleep(1000);
+        // 多线程测试
+        for (int i = 0; i < THREADS_NUMBER; i++) {
+            new Thread(() -> printObject(EagerlySingleton.getInstance())).start();
+        }
+    }
+
+    /**
+     * 饿汉式单例测试
+     */
+    private static void eagerlySingletonTest() {
+
+    }
+
     private static void printObject(Object obj) {
-        String objectName = obj.getClass().getSimpleName();
-        int memoryAddress = obj.hashCode();
-        System.out.println("对象内存地址：" + objectName + "@" + memoryAddress);
+        System.out.println("对象内存地址：" + obj.getClass().getSimpleName() + "@" + obj.hashCode());
     }
 }
