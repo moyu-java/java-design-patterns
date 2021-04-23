@@ -4,7 +4,7 @@ import java.io.*;
 import java.lang.reflect.Constructor;
 
 /**
- * 单例测试
+ * 单例测试 - 延迟加载、线程安全、反射测试
  *
  * @author James
  * @date 2021/4/20
@@ -14,24 +14,25 @@ public class Application {
     private static final int THREADS_NUMBER = 10;
 
     public static void main(String[] args) throws Exception {
+        // 序列化相关代码及测试请查看 com.junmoyu.singleton.serializable 包下代码
 
         // 枚举单例测试
         enumSingletonTest();
 
         // 饿汉式单例测试
-        eagerlySingletonTest();
+//        eagerlySingletonTest();
 
         // 线程不安全的懒汉式单例测试
-        threadUnsafeLazyLoadedSingletonTest();
+//        threadUnsafeLazyLoadedSingletonTest();
 
         // 线程安全的懒汉式单例测试
-        threadSafeLazyLoadedSingletonTest();
+//        threadSafeLazyLoadedSingletonTest();
 
         // 双重校验锁的单例测试
-        doubleCheckLockingSingletonTest();
+//        doubleCheckLockingSingletonTest();
 
         // 静态内部类的单例测试
-        staticInnerClassSingletonTest();
+//        staticInnerClassSingletonTest();
     }
 
     /**
@@ -42,80 +43,160 @@ public class Application {
         // 延迟加载测试
         System.out.println("代码启动");
         Thread.sleep(1000);
-        // 多线程测试
-        for (int i = 0; i < THREADS_NUMBER; i++) {
-            new Thread(() -> printObject(EagerlySingleton.getInstance())).start();
-        }
 
         // 反射测试
-        // 通过反射的方式直接调用私有构造器（通过在构造器里抛出异常可以解决此漏洞）
-        Class<EagerlySingleton> clazz = (Class<EagerlySingleton>) Class.forName("com.junmoyu.singleton.EagerlySingleton");
-        Constructor<EagerlySingleton> constructor = clazz.getDeclaredConstructor(null);
+        // 枚举天然防止反射攻击
+        Class<EnumSingleton> clazz = (Class<EnumSingleton>) Class.forName("com.junmoyu.singleton.EnumSingleton");
+        Constructor<EnumSingleton> constructor = clazz.getDeclaredConstructor(null);
 
-        // 赋予反射对象超级权限，绕过权限检查
-        constructor.setAccessible(true);
+        EnumSingleton singleton1 = constructor.newInstance();
+        EnumSingleton singleton2 = constructor.newInstance();
 
-        EagerlySingleton singleton1 = constructor.newInstance();
-        EagerlySingleton singleton2 = constructor.newInstance();
-
-        System.out.println("反射对象1：" + singleton1.toString());
-        System.out.println("反射对象2：" + singleton2.toString());
-
-        // 反序列化测试
-        // 将对象写入文件
-        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("tempFile"));
-        EagerlySingleton instance = EagerlySingleton.getInstance();
-        System.out.println("反序列化对象1：" + instance.toString());
-        os.writeObject(instance);
-        // 从文件中读取对象
-        File file = new File("tempFile");
-        ObjectInputStream is = new ObjectInputStream(new FileInputStream(file));
-        EagerlySingleton newInstance = (EagerlySingleton) is.readObject();
-        // 判断是否是同一个对象
-        System.out.println("反序列化对象2：" + newInstance.toString());
+        printObject("反射测试", singleton1);
+        printObject("反射测试", singleton2);
     }
 
     /**
      * 饿汉式单例测试
      * 线程安全、非延迟加载
      */
-    private static void eagerlySingletonTest() {
+    private static void eagerlySingletonTest() throws Exception {
+        // 延迟加载测试
+        System.out.println("代码启动");
+        Thread.sleep(1000);
 
+        // 多线程测试
+        for (int i = 0; i < THREADS_NUMBER; i++) {
+            new Thread(() -> printObject("多线程测试", EagerlySingleton.getInstance())).start();
+        }
+
+        // 反射测试
+        // 通过反射的方式直接调用私有构造器（通过在构造器里抛出异常可以解决此漏洞）
+        Class<EagerlySingleton> clazz = (Class<EagerlySingleton>) Class.forName("com.junmoyu.singleton.EagerlySingleton");
+        Constructor<EagerlySingleton> constructor = clazz.getDeclaredConstructor(null);
+        // 赋予反射对象超级权限，绕过权限检查
+        constructor.setAccessible(true);
+
+        EagerlySingleton singleton1 = constructor.newInstance();
+        EagerlySingleton singleton2 = constructor.newInstance();
+
+        printObject("反射测试", singleton1);
+        printObject("反射测试", singleton2);
     }
 
     /**
      * 线程不安全的懒加载单例测试
      * 线程不安全、延迟加载
      */
-    private static void threadUnsafeLazyLoadedSingletonTest() {
+    private static void threadUnsafeLazyLoadedSingletonTest() throws Exception {
+        // 延迟加载测试
+        System.out.println("代码启动");
+        Thread.sleep(1000);
 
+        // 多线程测试
+        for (int i = 0; i < THREADS_NUMBER; i++) {
+            new Thread(() -> printObject("多线程测试", ThreadUnsafeLazyLoadedSingleton.getInstance())).start();
+        }
+
+        // 反射测试
+        // 通过反射的方式直接调用私有构造器（通过在构造器里抛出异常可以解决此漏洞）
+        Class<ThreadUnsafeLazyLoadedSingleton> clazz = (Class<ThreadUnsafeLazyLoadedSingleton>) Class.forName("com.junmoyu.singleton.ThreadUnsafeLazyLoadedSingleton");
+        Constructor<ThreadUnsafeLazyLoadedSingleton> constructor = clazz.getDeclaredConstructor(null);
+        // 赋予反射对象超级权限，绕过权限检查
+        constructor.setAccessible(true);
+
+        ThreadUnsafeLazyLoadedSingleton singleton1 = constructor.newInstance();
+        ThreadUnsafeLazyLoadedSingleton singleton2 = constructor.newInstance();
+
+        printObject("反射测试", singleton1);
+        printObject("反射测试", singleton2);
     }
 
     /**
      * 线程安全的懒加载单例测试
      * 线程安全、延迟加载
      */
-    private static void threadSafeLazyLoadedSingletonTest() {
+    private static void threadSafeLazyLoadedSingletonTest() throws Exception {
+        // 延迟加载测试
+        System.out.println("代码启动");
+        Thread.sleep(1000);
 
+        // 多线程测试
+        for (int i = 0; i < THREADS_NUMBER; i++) {
+            new Thread(() -> printObject("多线程测试", ThreadSafeLazyLoadedSingleton.getInstance())).start();
+        }
+
+        // 反射测试
+        // 通过反射的方式直接调用私有构造器（通过在构造器里抛出异常可以解决此漏洞）
+        Class<ThreadSafeLazyLoadedSingleton> clazz = (Class<ThreadSafeLazyLoadedSingleton>) Class.forName("com.junmoyu.singleton.ThreadSafeLazyLoadedSingleton");
+        Constructor<ThreadSafeLazyLoadedSingleton> constructor = clazz.getDeclaredConstructor(null);
+        // 赋予反射对象超级权限，绕过权限检查
+        constructor.setAccessible(true);
+
+        ThreadSafeLazyLoadedSingleton singleton1 = constructor.newInstance();
+        ThreadSafeLazyLoadedSingleton singleton2 = constructor.newInstance();
+
+        printObject("反射测试", singleton1);
+        printObject("反射测试", singleton2);
     }
 
     /**
      * 双重校验锁的单例测试
      * 线程安全、延迟加载
      */
-    private static void doubleCheckLockingSingletonTest() {
+    private static void doubleCheckLockingSingletonTest() throws Exception {
+        // 延迟加载测试
+        System.out.println("代码启动");
+        Thread.sleep(1000);
 
+        // 多线程测试
+        for (int i = 0; i < THREADS_NUMBER; i++) {
+            new Thread(() -> printObject("多线程测试", DoubleCheckLockingSingleton.getInstance())).start();
+        }
+
+        // 反射测试
+        // 通过反射的方式直接调用私有构造器（通过在构造器里抛出异常可以解决此漏洞）
+        Class<DoubleCheckLockingSingleton> clazz = (Class<DoubleCheckLockingSingleton>) Class.forName("com.junmoyu.singleton.DoubleCheckLockingSingleton");
+        Constructor<DoubleCheckLockingSingleton> constructor = clazz.getDeclaredConstructor(null);
+        // 赋予反射对象超级权限，绕过权限检查
+        constructor.setAccessible(true);
+
+        DoubleCheckLockingSingleton singleton1 = constructor.newInstance();
+        DoubleCheckLockingSingleton singleton2 = constructor.newInstance();
+
+        printObject("反射测试", singleton1);
+        printObject("反射测试", singleton2);
     }
 
     /**
      * 静态内部类单例测试
      * 线程安全、延迟加载
      */
-    private static void staticInnerClassSingletonTest() {
+    private static void staticInnerClassSingletonTest() throws Exception {
+        // 延迟加载测试
+        System.out.println("代码启动");
+        Thread.sleep(1000);
 
+        // 多线程测试
+        for (int i = 0; i < THREADS_NUMBER; i++) {
+            new Thread(() -> printObject("多线程测试", StaticInnerClassSingleton.getInstance())).start();
+        }
+
+        // 反射测试
+        // 通过反射的方式直接调用私有构造器（通过在构造器里抛出异常可以解决此漏洞）
+        Class<StaticInnerClassSingleton> clazz = (Class<StaticInnerClassSingleton>) Class.forName("com.junmoyu.singleton.StaticInnerClassSingleton");
+        Constructor<StaticInnerClassSingleton> constructor = clazz.getDeclaredConstructor(null);
+        // 赋予反射对象超级权限，绕过权限检查
+        constructor.setAccessible(true);
+
+        StaticInnerClassSingleton singleton1 = constructor.newInstance();
+        StaticInnerClassSingleton singleton2 = constructor.newInstance();
+
+        printObject("反射测试", singleton1);
+        printObject("反射测试", singleton2);
     }
 
-    private static void printObject(Object obj) {
-        System.out.println("对象内存地址：" + obj.getClass().getSimpleName() + "@" + obj.hashCode());
+    private static void printObject(String tag, Object obj) {
+        System.out.println(tag + " - 对象内存地址：" + obj.getClass().getSimpleName() + "@" + obj.hashCode());
     }
 }

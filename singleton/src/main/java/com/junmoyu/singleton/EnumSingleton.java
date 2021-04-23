@@ -15,8 +15,7 @@ public enum EnumSingleton {
     INSTANCE;
 
     /**
-     * 如有需初始化的内容，可实现此构造器
-     * 如没有初始化的内容，可删除省略此方法
+     * 如果没有初始化的内容，可删除此方法
      */
     EnumSingleton() {
         System.out.println(getClass().getCanonicalName() + " 被实例化，内存地址为：" + hashCode());
