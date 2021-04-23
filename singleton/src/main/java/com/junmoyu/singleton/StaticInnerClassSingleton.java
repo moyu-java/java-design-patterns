@@ -7,12 +7,12 @@ package com.junmoyu.singleton;
  * @author moyu.jun
  * @date 2021/4/18
  */
-public class StaticInnerClassLazyLoadedSingleton {
+public class StaticInnerClassSingleton {
 
     /**
      * 私有构造方法
      */
-    private StaticInnerClassLazyLoadedSingleton() {
+    private StaticInnerClassSingleton() {
         // 防止通过反射进行实例化从而破坏单例
         // 如不需要删除即可
         if (getInstance() != null) {
@@ -27,7 +27,7 @@ public class StaticInnerClassLazyLoadedSingleton {
      *
      * @return 单例实例
      */
-    public static StaticInnerClassLazyLoadedSingleton getInstance() {
+    public static StaticInnerClassSingleton getInstance() {
         return HelperHolder.INSTANCE;
     }
 
@@ -35,6 +35,6 @@ public class StaticInnerClassLazyLoadedSingleton {
      * 使用静态内部类来实现延迟加载
      */
     private static class HelperHolder {
-        private static final StaticInnerClassLazyLoadedSingleton INSTANCE = new StaticInnerClassLazyLoadedSingleton();
+        private static final StaticInnerClassSingleton INSTANCE = new StaticInnerClassSingleton();
     }
 }

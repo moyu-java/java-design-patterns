@@ -15,8 +15,31 @@ public class Application {
 
     public static void main(String[] args) throws Exception {
 
+        // 枚举单例测试
         enumSingletonTest();
 
+        // 饿汉式单例测试
+        eagerlySingletonTest();
+
+        // 线程不安全的懒汉式单例测试
+        threadUnsafeLazyLoadedSingletonTest();
+
+        // 线程安全的懒汉式单例测试
+        threadSafeLazyLoadedSingletonTest();
+
+        // 双重校验锁的单例测试
+        doubleCheckLockingSingletonTest();
+
+        // 静态内部类的单例测试
+        staticInnerClassSingletonTest();
+    }
+
+    /**
+     * 枚举单例测试
+     * 线程安全、非延迟加载
+     */
+    private static void enumSingletonTest() throws Exception {
+        // 延迟加载测试
         System.out.println("代码启动");
         Thread.sleep(1000);
         // 多线程测试
@@ -53,21 +76,42 @@ public class Application {
     }
 
     /**
-     * 枚举单例测试
+     * 饿汉式单例测试
+     * 线程安全、非延迟加载
      */
-    private static void enumSingletonTest() throws Exception {
-        System.out.println("代码启动");
-        Thread.sleep(1000);
-        // 多线程测试
-        for (int i = 0; i < THREADS_NUMBER; i++) {
-            new Thread(() -> printObject(EagerlySingleton.getInstance())).start();
-        }
+    private static void eagerlySingletonTest() {
+
     }
 
     /**
-     * 饿汉式单例测试
+     * 线程不安全的懒加载单例测试
+     * 线程不安全、延迟加载
      */
-    private static void eagerlySingletonTest() {
+    private static void threadUnsafeLazyLoadedSingletonTest() {
+
+    }
+
+    /**
+     * 线程安全的懒加载单例测试
+     * 线程安全、延迟加载
+     */
+    private static void threadSafeLazyLoadedSingletonTest() {
+
+    }
+
+    /**
+     * 双重校验锁的单例测试
+     * 线程安全、延迟加载
+     */
+    private static void doubleCheckLockingSingletonTest() {
+
+    }
+
+    /**
+     * 静态内部类单例测试
+     * 线程安全、延迟加载
+     */
+    private static void staticInnerClassSingletonTest() {
 
     }
 
