@@ -11,6 +11,8 @@ import java.io.Serializable;
  */
 public class ThreadUnsafeLazyLoadedSingleton implements Serializable {
 
+    private static final long serialVersionUID = 2113375227977510200L;
+
     private static ThreadUnsafeLazyLoadedSingleton INSTANCE = null;
 
     /**

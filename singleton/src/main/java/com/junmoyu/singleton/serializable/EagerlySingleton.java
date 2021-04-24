@@ -11,6 +11,8 @@ import java.io.Serializable;
  */
 public class EagerlySingleton implements Serializable {
 
+    private static final long serialVersionUID = 1251295151885338651L;
+
     /**
      * 初始化静态实例
      */

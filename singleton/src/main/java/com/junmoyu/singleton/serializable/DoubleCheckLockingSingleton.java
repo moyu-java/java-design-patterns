@@ -12,6 +12,8 @@ import java.io.Serializable;
  */
 public class DoubleCheckLockingSingleton implements Serializable {
 
+    private static final long serialVersionUID = -8892891266849756173L;
+
     /**
      * 加入 volatile 保证线程可见性，防止指令重排导致实例被多次实例化
      * 否则线程不安全

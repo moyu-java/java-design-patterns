@@ -11,6 +11,8 @@ import java.io.Serializable;
  */
 public class ThreadSafeLazyLoadedSingleton implements Serializable {
 
+    private static final long serialVersionUID = 2675885695793844180L;
+
     /**
      * 加入 volatile 保证线程可见性，防止指令重排导致实例被多次实例化
      * 否则线程不安全

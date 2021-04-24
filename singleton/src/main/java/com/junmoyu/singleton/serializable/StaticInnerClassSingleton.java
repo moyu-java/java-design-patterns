@@ -11,6 +11,8 @@ import java.io.Serializable;
  */
 public class StaticInnerClassSingleton implements Serializable {
 
+    private static final long serialVersionUID = 3637520647365162181L;
+
     /**
      * 私有构造方法
      */

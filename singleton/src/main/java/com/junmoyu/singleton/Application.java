@@ -1,6 +1,5 @@
 package com.junmoyu.singleton;
 
-import java.io.*;
 import java.lang.reflect.Constructor;
 
 /**
@@ -43,6 +42,8 @@ public class Application {
         // 延迟加载测试
         System.out.println("代码启动");
         Thread.sleep(1000);
+
+        printObject("枚举对象", EnumSingleton.INSTANCE);
 
         // 反射测试
         // 枚举天然防止反射攻击
@@ -98,6 +99,9 @@ public class Application {
             new Thread(() -> printObject("多线程测试", ThreadUnsafeLazyLoadedSingleton.getInstance())).start();
         }
 
+        // 避免多线程未创建实例就被反射创建了
+        Thread.sleep(1000);
+
         // 反射测试
         // 通过反射的方式直接调用私有构造器（通过在构造器里抛出异常可以解决此漏洞）
         Class<ThreadUnsafeLazyLoadedSingleton> clazz = (Class<ThreadUnsafeLazyLoadedSingleton>) Class.forName("com.junmoyu.singleton.ThreadUnsafeLazyLoadedSingleton");
@@ -125,6 +129,9 @@ public class Application {
         for (int i = 0; i < THREADS_NUMBER; i++) {
             new Thread(() -> printObject("多线程测试", ThreadSafeLazyLoadedSingleton.getInstance())).start();
         }
+
+        // 避免多线程未创建实例就被反射创建了
+        Thread.sleep(1000);
 
         // 反射测试
         // 通过反射的方式直接调用私有构造器（通过在构造器里抛出异常可以解决此漏洞）
@@ -154,6 +161,9 @@ public class Application {
             new Thread(() -> printObject("多线程测试", DoubleCheckLockingSingleton.getInstance())).start();
         }
 
+        // 避免多线程未创建实例就被反射创建了
+        Thread.sleep(1000);
+
         // 反射测试
         // 通过反射的方式直接调用私有构造器（通过在构造器里抛出异常可以解决此漏洞）
         Class<DoubleCheckLockingSingleton> clazz = (Class<DoubleCheckLockingSingleton>) Class.forName("com.junmoyu.singleton.DoubleCheckLockingSingleton");
@@ -181,6 +191,9 @@ public class Application {
         for (int i = 0; i < THREADS_NUMBER; i++) {
             new Thread(() -> printObject("多线程测试", StaticInnerClassSingleton.getInstance())).start();
         }
+
+        // 避免多线程未创建实例就被反射创建了
+        Thread.sleep(1000);
 
         // 反射测试
         // 通过反射的方式直接调用私有构造器（通过在构造器里抛出异常可以解决此漏洞）
