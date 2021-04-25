@@ -72,6 +72,7 @@ public abstract class AbstractValidateCode {
      */
     private void saveCode(String account, String code) {
         VALIDATE_CODE_MAP.put(account, code);
+        System.out.println("验证码已保存");
     }
 
     /**
