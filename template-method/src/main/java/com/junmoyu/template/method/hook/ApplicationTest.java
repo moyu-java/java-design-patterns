@@ -19,7 +19,7 @@ public class ApplicationTest {
 
         // 手机验证码创建测试
         smsValidateCodeTest();
-        System.out.println("\n");
+        System.out.print("\n");
 
         // 邮箱验证码测试
         emailValidateCodeTest();

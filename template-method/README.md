@@ -282,13 +282,109 @@ public class ApplicationTest {
 
 ## 4. Hook（钩子）
 
+在模板方法模式中，基本方法有抽象方法、具体方法和钩子方法（hook）。正确地使用钩子方法，可以让子类控制父类的行为，当然这种控制也是在父类中规定好的。
 
+还是以验证码举例，有时候子类可能需要自定义消息模板，所以需要在抽象父类中添加钩子方法，让子类来控制父类的行为。代码如下：
 
+```java
+package com.junmoyu.template.method.hook;
+/**
+ * 验证码抽象类 - 添加 Hook
+ */
+public abstract class AbstractValidateCode {
+    /**
+     * 模板方法 - 创建验证码
+     */
+    public final void create(String account) {
+        // 1.账号校验
+        if (!validateParam(account)) {
+            throw new IllegalStateException("账号无效");
+        }
+        // 2.验证码生成
+        String code = generate();
 
+        // 3.验证码保存
+        saveCode(account, code);
 
+        // 判断是否自定义模板，使用 Hook
+        if (needCustomizeTemplate()) {
+            setMessageTemplate();
+        }
+        // 4.验证码发送
+        send(account, code);
+    }
 
+    /**
+     * Hook 方法 - 是否需要自定义模板
+     */
+    public boolean needCustomizeTemplate() {
+        return false;
+    }
 
+    /**
+     * 抽象方法 - 设置信息模板
+     */
+    public abstract void setMessageTemplate();
+    
+    // ... 省略其他方法
+}
+```
 
+如上述代码所示，在发送验证码之前，通过 `needCustomizeTemplate()` 方法判断是否需要设置消息模板。默认不需要，使用默认消息模板即可。如果子类需要自定义，可以重写 `needCustomizeTemplate()` 方法来控制抽象父类的行为。
 
+子类代码实现如下：
 
+```java
+package com.junmoyu.template.method.hook;
+/**
+ * 短信验证码 - 添加 Hook
+ */
+public class SmsValidateCode extends AbstractValidateCode {
+	// ... 省略其他方法
 
+    @Override
+    public boolean needCustomizeTemplate() {
+        String answer = getUserInput();
+        if (answer.toLowerCase().startsWith("y")) {
+            return true;
+        }
+        return false;
+    }
+
+    private String getUserInput() {
+        String answer = null;
+        System.out.print("请问您要设置自定义模板嘛（y/n）？: ");
+        Scanner s = new Scanner(System.in);
+        answer = s.nextLine();
+        if (StringUtils.isEmpty(answer)) {
+            return "no";
+        }
+        if (!answer.toLowerCase().startsWith("y") && !answer.toLowerCase().startsWith("n")) {
+            return "no";
+        }
+        return answer;
+    }
+}
+```
+
+在短信验证码中重写 `needCustomizeTemplate()` ，当用户输入 “yes” 或 "y" 时，就可以设置自定义消息模板了。钩子方法相关的完整代码在 `com.junmoyu.template.method.hook` 包下。运行 `ApplicationTest` 中的 `main()` 方法进行测试。输出结果如下：
+
+```java
+开始手机验证码测试 --------- 
+手机号码校验通过
+生成六位纯数字的手机验证码：756978
+请问您要设置自定义模板嘛（y/n）？: y
+设置了自定义的短信模板
+已将验证码发送到手机。手机号码：13855287421，验证码：756978
+请输入六位手机验证码：756978
+验证码校验成功，验证通过
+
+开始邮箱验证码测试 --------- 
+邮箱账号校验通过
+生成六位英文 + 数字的邮箱验证码.XaZSBn
+已将验证码发送到邮箱。邮箱账号：example@email.com，验证码：XaZSBn
+请输入六位邮箱验证码：XaZSBn
+验证码校验成功，验证通过
+```
+
+通过输出可以看到，短信验证码已经执行了 `setMessageTemplate()` 方法。
