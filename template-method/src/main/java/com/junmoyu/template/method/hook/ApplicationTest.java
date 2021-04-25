@@ -1,16 +1,16 @@
-package com.junmoyu.template.method;
+package com.junmoyu.template.method.hook;
 
 import com.junmoyu.template.method.util.StringUtils;
 
 import java.util.Scanner;
 
 /**
- * 模板方法模式的测试类
+ * 模板方法模式的测试类 - Hook 测试
  *
  * @author moyu.jun
  * @date 2021/4/24
  */
-public class Application {
+public class ApplicationTest {
 
     private static final String MOBILE_ACCOUNT = "13855287421";
     private static final String EMAIL_ACCOUNT = "example@email.com";
@@ -19,6 +19,7 @@ public class Application {
 
         // 手机验证码创建测试
         smsValidateCodeTest();
+        System.out.println("\n");
 
         // 邮箱验证码测试
         emailValidateCodeTest();

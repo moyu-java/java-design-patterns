@@ -1,4 +1,4 @@
-package com.junmoyu.template.method;
+package com.junmoyu.template.method.hook;
 
 import com.junmoyu.template.method.util.StringUtils;
 
@@ -36,8 +36,15 @@ public abstract class AbstractValidateCode {
         // 3.验证码保存
         saveCode(account, code);
 
+        // 判断是否自定义模板，使用 Hook
+        if (needCustomizeTemplate()) {
+            setMessageTemplate();
+        }
+
         // 4.验证码发送
         send(account, code);
+
+        // 用时间间隔演示 Hook
     }
 
     /**
@@ -88,6 +95,10 @@ public abstract class AbstractValidateCode {
         VALIDATE_CODE_MAP.remove(account);
     }
 
+    protected boolean needCustomizeTemplate() {
+        return false;
+    }
+
     /**
      * 校验参数，验证手机号或邮箱是否符合规则
      *
@@ -102,6 +113,11 @@ public abstract class AbstractValidateCode {
      * @return 验证码
      */
     protected abstract String generate();
+
+    /**
+     * 设置信息模板
+     */
+    protected abstract void setMessageTemplate();
 
     /**
      * 发送验证码

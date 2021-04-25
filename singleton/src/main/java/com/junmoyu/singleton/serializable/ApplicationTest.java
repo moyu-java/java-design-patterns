@@ -9,7 +9,7 @@ import java.io.*;
  * @author James
  * @date 2021/4/20
  */
-public class Application {
+public class ApplicationTest {
 
     public static void main(String[] args) throws Exception {
 

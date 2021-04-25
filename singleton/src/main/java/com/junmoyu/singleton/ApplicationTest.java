@@ -8,7 +8,7 @@ import java.lang.reflect.Constructor;
  * @author James
  * @date 2021/4/20
  */
-public class Application {
+public class ApplicationTest {
 
     private static final int THREADS_NUMBER = 10;
 

@@ -1,4 +1,4 @@
-package com.junmoyu.template.method;
+package com.junmoyu.template.method.hook;
 
 import com.junmoyu.template.method.util.RandomUtils;
 import com.junmoyu.template.method.util.RegexUtils;
@@ -25,6 +25,11 @@ public class EmailValidateCode extends AbstractValidateCode {
         String code = RandomUtils.random(6);
         System.out.println("生成六位英文 + 数字的邮箱验证码." + code);
         return code;
+    }
+
+    @Override
+    protected void setMessageTemplate() {
+        System.out.println("设置了自定义的邮箱模板");
     }
 
     @Override
