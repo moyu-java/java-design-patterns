@@ -7,7 +7,7 @@ import com.junmoyu.template.method.util.StringUtils;
 import java.util.Scanner;
 
 /**
- * 短信验证码
+ * 短信验证码 - 添加 Hook
  *
  * @author moyu.jun
  * @date 2021/4/24
@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class SmsValidateCode extends AbstractValidateCode {
 
     @Override
-    protected boolean validateParam(String account) {
+    public boolean validateParam(String account) {
         if (RegexUtils.isMobile(account)) {
             System.out.println("手机号码校验通过");
             return true;
@@ -24,25 +24,25 @@ public class SmsValidateCode extends AbstractValidateCode {
     }
 
     @Override
-    protected String generate() {
+    public String generate() {
         String code = RandomUtils.random(6, true);
         System.out.println("生成六位纯数字的手机验证码：" + code);
         return code;
     }
 
     @Override
-    protected void setMessageTemplate() {
+    public void setMessageTemplate() {
         System.out.println("设置了自定义的短信模板");
     }
 
     @Override
-    protected void send(String account, String code) {
+    public void send(String account, String code) {
         // 发送验证码到手机，在此不做实现
         System.out.println("已将验证码发送到手机。手机号码：" + account + "，验证码：" + code);
     }
 
     @Override
-    protected boolean needCustomizeTemplate() {
+    public boolean needCustomizeTemplate() {
         String answer = getUserInput();
         if (answer.toLowerCase().startsWith("y")) {
             return true;

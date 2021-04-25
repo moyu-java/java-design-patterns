@@ -89,25 +89,25 @@ public abstract class AbstractValidateCode {
     }
 
     /**
-     * 校验参数，验证手机号或邮箱是否符合规则
+     * 抽象方法 - 校验参数，验证手机号或邮箱是否符合规则
      *
      * @param account 请求
      * @return 是否符合规则
      */
-    protected abstract boolean validateParam(String account);
+    public abstract boolean validateParam(String account);
 
     /**
-     * 生成验证码
+     * 抽象方法 - 生成验证码
      *
      * @return 验证码
      */
-    protected abstract String generate();
+    public abstract String generate();
 
     /**
-     * 发送验证码
+     * 抽象方法 - 发送验证码
      *
      * @param account 账号
      * @param code    验证码
      */
-    protected abstract void send(String account, String code);
+    public abstract void send(String account, String code);
 }

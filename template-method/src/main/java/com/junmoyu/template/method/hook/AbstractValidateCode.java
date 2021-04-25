@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 验证码抽象类
+ * 验证码抽象类 - 添加 Hook
  * 定义模板方法和抽象策略
  *
  * @author moyu.jun
@@ -43,8 +43,6 @@ public abstract class AbstractValidateCode {
 
         // 4.验证码发送
         send(account, code);
-
-        // 用时间间隔演示 Hook
     }
 
     /**
@@ -70,7 +68,6 @@ public abstract class AbstractValidateCode {
 
         // 3.验证通过后，清除验证码
         removeCode(account);
-        System.out.println("验证码校验成功，验证通过");
         return true;
     }
 
@@ -95,35 +92,40 @@ public abstract class AbstractValidateCode {
         VALIDATE_CODE_MAP.remove(account);
     }
 
-    protected boolean needCustomizeTemplate() {
+    /**
+     * Hook 方法 - 是否需要自定义模板
+     *
+     * @return true: 需要；false: 不需要
+     */
+    public boolean needCustomizeTemplate() {
         return false;
     }
 
     /**
-     * 校验参数，验证手机号或邮箱是否符合规则
+     * 抽象方法 - 校验参数，验证手机号或邮箱是否符合规则
      *
      * @param account 请求
      * @return 是否符合规则
      */
-    protected abstract boolean validateParam(String account);
+    public abstract boolean validateParam(String account);
 
     /**
-     * 生成验证码
+     * 抽象方法 - 生成验证码
      *
      * @return 验证码
      */
-    protected abstract String generate();
+    public abstract String generate();
 
     /**
-     * 设置信息模板
+     * 抽象方法 - 设置信息模板
      */
-    protected abstract void setMessageTemplate();
+    public abstract void setMessageTemplate();
 
     /**
-     * 发送验证码
+     * 抽象方法 - 发送验证码
      *
      * @param account 账号
      * @param code    验证码
      */
-    protected abstract void send(String account, String code);
+    public abstract void send(String account, String code);
 }

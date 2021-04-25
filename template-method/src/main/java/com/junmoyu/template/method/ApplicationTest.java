@@ -40,7 +40,9 @@ public class ApplicationTest {
             String code = s.nextLine();
             if (StringUtils.isNotEmpty(code) && code.length() == 6) {
                 // 校验手机验证码
-                smsValidateCode.validate(MOBILE_ACCOUNT, code);
+                if (smsValidateCode.validate(MOBILE_ACCOUNT, code)) {
+                    System.out.println("验证码校验成功，验证通过");
+                }
                 break;
             } else {
                 System.out.print("请输入六位手机验证码：");
@@ -63,7 +65,9 @@ public class ApplicationTest {
             String code = s.nextLine();
             if (StringUtils.isNotEmpty(code) && code.length() == 6) {
                 // 校验邮箱验证码
-                emailValidateCode.validate(EMAIL_ACCOUNT, code);
+                if (emailValidateCode.validate(EMAIL_ACCOUNT, code)) {
+                    System.out.println("验证码校验成功，验证通过");
+                }
                 break;
             } else {
                 System.out.print("请输入六位邮箱验证码：");
