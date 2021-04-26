@@ -2,6 +2,7 @@ package com.junmoyu.singleton;
 
 import java.lang.reflect.Constructor;
 
+
 /**
  * 单例测试 - 延迟加载、线程安全、反射测试
  *
@@ -16,10 +17,10 @@ public class ApplicationTest {
         // 序列化相关代码及测试请查看 com.junmoyu.singleton.serializable 包下代码
 
         // 枚举单例测试
-        enumSingletonTest();
+//        enumSingletonTest();
 
         // 饿汉式单例测试
-//        eagerlySingletonTest();
+        eagerlySingletonTest();
 
         // 线程不安全的懒汉式单例测试
 //        threadUnsafeLazyLoadedSingletonTest();
@@ -43,18 +44,17 @@ public class ApplicationTest {
         System.out.println("代码启动");
         Thread.sleep(1000);
 
+        // 枚举对象使用
         printObject("枚举对象", EnumSingleton.INSTANCE);
+        EnumSingleton.INSTANCE.setName("junmoyu.com");
+        System.out.println("name：" + EnumSingleton.INSTANCE.getName());
 
         // 反射测试
         // 枚举天然防止反射攻击
         Class<EnumSingleton> clazz = (Class<EnumSingleton>) Class.forName("com.junmoyu.singleton.EnumSingleton");
         Constructor<EnumSingleton> constructor = clazz.getDeclaredConstructor(null);
-
+        // 这里将直接报异常
         EnumSingleton singleton1 = constructor.newInstance();
-        EnumSingleton singleton2 = constructor.newInstance();
-
-        printObject("反射测试", singleton1);
-        printObject("反射测试", singleton2);
     }
 
     /**

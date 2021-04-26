@@ -46,4 +46,6 @@ public class DoubleCheckLockingSingleton {
         }
         return INSTANCE;
     }
+
+
 }

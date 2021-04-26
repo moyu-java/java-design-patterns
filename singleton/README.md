@@ -1,14 +1,10 @@
 # 单例模式（Singleton）
 
-## 单例模式的定义与特点
+![](https://i.loli.net/2021/04/26/jKCU4OepwDolxAh.png)
 
-单例（Singleton）模式的定义：指一个类只有一个实例，且该类能自行创建这个实例的一种模式。
+> 定义：指一个类只有一个实例，且该类能自行创建这个实例的一种模式。
 
-在计算机系统中，还有 Windows 的回收站、操作系统中的文件系统、多线程中的线程池、显卡的驱动程序对象、打印机的后台处理服务、应用程序的日志对象、数据库的连接池、网站的计数器、Web
-应用的配置对象、应用程序中的对话框、系统中的缓存等常常被设计成单例。
-
-单例模式在现实生活中的应用也非常广泛，例如公司 CEO、部门经理等都属于单例模型。J2EE 标准中的 ServletContext 和 ServletContextConfig、Spring 框架应用中的
-ApplicationContext、数据库中的连接池等也都是单例模式。
+## 1. 特点
 
 单例模式有 3 个特点：
 
@@ -16,7 +12,11 @@ ApplicationContext、数据库中的连接池等也都是单例模式。
 2. 该单例对象必须由单例类自行创建；
 3. 单例类对外提供一个访问该单例的全局访问点。
 
-## 单例模式的优点和缺点
+一般来说，系统中只需要有一个实例就能满足系统需要时，那么就可以设计成单例模式。
+
+比如 Windows 的回收站，数据库的连接池，系统中的日志对象等等。（当然，如果你非要设计成多个，我也没有办法是不是）
+
+## 2. 优点和缺点
 
 单例模式的优点：
 
@@ -30,18 +30,30 @@ ApplicationContext、数据库中的连接池等也都是单例模式。
 2. 在并发测试中，单例模式不利于代码调试。在调试过程中，如果单例中的代码没有执行完，也不能模拟生成一个新的对象。
 3. 单例模式的功能代码通常写在一个类中，如果功能设计不合理，则很容易违背单一职责原则。
 
-## 单例模式的实现
+## 3. 结构
 
-单例模式可以按不同维度对其进行分类
+单例模式的 UML 类图如下图所示，非常简单，只有一个类。
+
+![](https://i.loli.net/2021/04/26/jKCU4OepwDolxAh.png)
+
+上述类图很好地体现了单例模式的3个特点。
+
+1. 一个私有实例常量 `INSTANCE`，保证只有一个实例对象；
+2. 一个私有的构造器 `private Singleton(){}` 保证外部无法实例化，只能由自身创建；
+3. 通过公共的 `getInstance()` 方法提供一个访问该单例的全局访问点。
+
+## 4. 实现
+
+单例模式可以按不同维度对其进行分类：
 
 * 线程安全维度：线程安全的单例模式、线程不安全的单例模式
 * 对象创建时机：饿汉式的单例模式、懒汉式的单例模式
-    * 饿汉式 - 第一次调用前就已经被实例化了。
+    * 饿汉式 - 第一次调用前（或说类被 JVM 加载时）就已经被实例化了。
     * 懒汉式 - 只有在第一次调用的时候才会被实例化。
 
-### 枚举实现的单例
+### 4.1 枚举实现
 
-因为 Java 保证枚举类的每个枚举都是单例，所以我们只需要编写一个只有一个枚举的类即可，而且它也是**线程安全**的。
+因为 Java 保证枚举类的每个枚举都是单例，所以我们只需要编写一个只有一个枚举的类即可，而且它是**线程安全**的。
 
 枚举类也完全可以像其他类那样定义自己的字段、方法，如下方实例代码中的 `name` 参数，`getName()` 及 `setName()` 方法等。
 
@@ -49,12 +61,8 @@ ApplicationContext、数据库中的连接池等也都是单例模式。
 /**
  * 枚举的单例实现 - 线程安全
  * 绝对防止多实例化，即使是在面反序列化和反射攻击时
- *
- * @author moyu.jun
- * @date 2021/4/18
  */
 public enum EnumSingleton {
-
     /**
      * 唯一实例
      */
@@ -72,20 +80,39 @@ public enum EnumSingleton {
 }
 ```
 
-> `Effective Java` 书中也推荐使用这种单例模式。
+> `Effective Java` 书中也推荐使用这种单例模式。因为它足够简单，线程安全，且天然可以防止多实例化，即使是在面反序列化和反射攻击时。
+>
+> 你可以直接用 `EnumSingleton.INSTANCE.getName()` 来使用单例中的方法。
 
-我们可以在 `Application` 类中进行测试，代码如下：
+我们可以在 `ApplicationTest` 类中进行测试，代码如下：
 
 ```java
 public class Application {
-
     public static void main(String[] args) throws Exception {
+        // 枚举单例测试
+        enumSingletonTest();
+    }
+
+    /**
+     * 枚举单例测试
+     * 线程安全、非延迟加载
+     */
+    private static void enumSingletonTest() throws Exception {
+        // 延迟加载测试
         System.out.println("代码启动");
         Thread.sleep(1000);
-        // 多线程测试
-        for (int i = 0; i < SingletonConstants.THREADS_NUMBER; i++) {
-            new Thread(() -> printObject(EagerlySingleton.getInstance())).start();
-        }
+        
+        // 枚举对象使用
+        printObject("枚举对象", EnumSingleton.INSTANCE);
+        EnumSingleton.INSTANCE.setName("junmoyu.com");
+        System.out.println("name：" + EnumSingleton.INSTANCE.getName());
+
+        // 反射测试
+        // 枚举天然防止反射攻击
+        Class<EnumSingleton> clazz = (Class<EnumSingleton>) Class.forName("com.junmoyu.singleton.EnumSingleton");
+        Constructor<EnumSingleton> constructor = clazz.getDeclaredConstructor(null);
+        // 这里将直接报异常
+        EnumSingleton singleton1 = constructor.newInstance();
     }
     
     private static void printObject(Object obj) {
@@ -94,40 +121,28 @@ public class Application {
 }
 ```
 
-### 饿汉式单例模式
+### 4.2 饿汉式单例
 
-饿汉式单例，其创建对象的时机是在第一次调用之前，在类被 JVM 加载时就会被创建。
-
-此类提供了已被实例化的静态实例 `INSTANCE`，所以不存在多个线程创建多个实例的情况。所以它是**线程安全**的
-
-这种单例模式的缺点是即使单例没有被使用，对象也会被创建，占用资源。但其实并不会占用太多资源。
+饿汉式单例，其创建对象的时机是在第一次调用之前，在类被 JVM 加载时就会被创建。其代码如下：
 
 ```java
 /**
  * 饿汉式单例模式 - 线程安全
  * 该类在程序加载时就已经初始化完成了
- *
- * @author moyu.jun
- * @date 2021/4/18
  */
 public class EagerlySingleton {
-
     /**
      * 初始化静态实例
      */
     private static final EagerlySingleton INSTANCE = new EagerlySingleton();
-
     /**
      * 私有构造函数，保证无法从外部进行实例化
      */
     private EagerlySingleton() {
-        System.out.println("EagerlySingleton 被实例化");
+        System.out.println(getClass().getCanonicalName() + " 被实例化，内存地址为：" + hashCode());
     }
-
     /**
      * 可被用户调用以获取类的实例
-     *
-     * @return 单例实例
      */
     public static EagerlySingleton getInstance() {
         return INSTANCE;
@@ -138,19 +153,53 @@ public class EagerlySingleton {
         // 打印类名，以及类的内存地址
         return getClass().getName() + "@" + hashCode();
     }
+}
+```
 
+如上，此类提供了已被实例化的静态实例 `INSTANCE`，所以不存在多个线程创建多个实例的情况，所以它是**线程安全**的。
+
+这种单例模式的缺点是即使单例没有被使用，对象也会被创建，占用资源（但其实并不会占用太多资源，视具体业务情况而定）。同样的，在 `ApplicationTest` 中进行测试，看一下效果。
+
+```java
+package com.junmoyu.singleton;
+public class ApplicationTest {
     public static void main(String[] args) throws Exception {
+        // 饿汉式单例测试
+        eagerlySingletonTest();
+    }
+    /**
+     * 饿汉式单例测试
+     * 线程安全、非延迟加载
+     */
+    private static void eagerlySingletonTest() throws Exception {
+        // 延迟加载测试
         System.out.println("代码启动");
         Thread.sleep(1000);
+
         // 多线程测试
-        for (int i = 0; i < SingletonConstants.THREADS_NUMBER; i++) {
-            new Thread(() -> System.out.println(EagerlySingleton.getInstance().toString())).start();
+        for (int i = 0; i < THREADS_NUMBER; i++) {
+            new Thread(() -> printObject("多线程测试", EagerlySingleton.getInstance())).start();
         }
+
+        // 反射测试
+        // 通过反射的方式直接调用私有构造器（通过在构造器里抛出异常可以解决此漏洞）
+        Class<EagerlySingleton> clazz = (Class<EagerlySingleton>) Class.forName("com.junmoyu.singleton.EagerlySingleton");
+        Constructor<EagerlySingleton> constructor = clazz.getDeclaredConstructor(null);
+        // 赋予反射对象超级权限，绕过权限检查
+        constructor.setAccessible(true);
+
+        EagerlySingleton singleton1 = constructor.newInstance();
+        EagerlySingleton singleton2 = constructor.newInstance();
+
+        printObject("反射测试", singleton1);
+        printObject("反射测试", singleton2);
     }
 }
 ```
 
-### 静态内部类实现的单例
+
+
+### 4.3 静态内部类实现
 
 静态内部类实现的单例与上面的饿汉式单例有点相似，这种单例模式也是 **线程安全**的，但它却是延迟加载的，其代码实现如下所示：
 
@@ -207,7 +256,7 @@ public class StaticInnerClassLazyLoadedSingleton {
 
 并且在多线程测试中可以发现其实例化地址都是一样的。可以说明它也的确是**线程安全**的。
 
-### 懒汉式单例
+### 4.4 懒汉式单例
 
 懒汉式的特点是`延迟加载`，即对象会在第一次调用时才会被实例化，避免资源消耗。
 
@@ -601,7 +650,7 @@ public class EagerlySingleton implements Serializable {
 
 我们在用相同的方法测试一下**枚举**实现的单例模式，可以发现，**枚举**并不存在序列化的问题。
 
-## 总结
+## 6. 总结
 
 至此，我们讨论了六种单例模式的实现方式。
 
@@ -619,7 +668,7 @@ public class EagerlySingleton implements Serializable {
 
 那么除此之外较好的单例实现还有**静态内部类**的实现，以及**双重校验锁**的实现，可以根据自己的业务需要灵活选择。
 
-## 拓展
+## 7. 拓展
 
 另外其实还有一种稍微特殊一点的 "单例" 模式，可以称之为 **线程单例**，及在双重校验锁的单例模式中，不使用 **volatile** 关键字，而是使用 ThreadLocal 使每一个线程拥有自己的单例。
 

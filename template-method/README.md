@@ -1,8 +1,10 @@
 # 模板方法模式（Template Method）
 
+![](https://i.loli.net/2021/04/25/PexN7QChy8jvlUw.png)
+
 > 定义：一个操作中的算法骨架，而将算法的一些步骤延迟到子类中，使得子类可以不改变该算法结构的情况下重定义该算法的某些特定步骤。
 
-## 1. 特点
+## 1. 优点与缺点
 
 模板方法模式的主要优点如下：
 
@@ -18,7 +20,7 @@
 
 ## 2. 结构
 
-模板方法的 UML 类图如下图所示：
+模板方法模式的 UML 类图如下图所示：
 
 ![](https://i.loli.net/2021/04/25/PexN7QChy8jvlUw.png)
 
@@ -62,7 +64,7 @@ public class ConcreteClassOne extends AbstractTemplateMethod {
 
 所以抽象基类 `AbstractTemplateMethod` 的模板方法 `templateMethod` 就是一个骨架或模板，它只定义了程序执行的步骤，但并不实现，而是延迟到子类 `ConcreteClassOne` 中去实现。
 
-## 3. 实例
+## 3. 实现
 
 在我们日常开发中，有一个非常常见的需求，那就是登录的时候，可以选择验证码登录，并且很多应用都支持**短信**和**邮箱**两种验证方式。
 
@@ -260,7 +262,7 @@ public class ApplicationTest {
 
 执行程序，可以看到如下打印信息：
 
-```java
+```
 开始手机验证码测试 --------- 
 手机号码校验通过
 生成六位纯数字的手机验证码：754596
@@ -367,9 +369,9 @@ public class SmsValidateCode extends AbstractValidateCode {
 }
 ```
 
-在短信验证码中重写 `needCustomizeTemplate()` ，当用户输入 “yes” 或 "y" 时，就可以设置自定义消息模板了。钩子方法相关的完整代码在 `com.junmoyu.template.method.hook` 包下。运行 `ApplicationTest` 中的 `main()` 方法进行测试。输出结果如下：
+在短信验证码中重写 `needCustomizeTemplate()` ，当用户输入 “yes” 或 “y” 时，就可以设置自定义消息模板了。钩子方法相关的完整代码在 `com.junmoyu.template.method.hook` 包下。运行 `ApplicationTest` 中的 `main()` 方法进行测试。输出结果如下：
 
-```java
+```
 开始手机验证码测试 --------- 
 手机号码校验通过
 生成六位纯数字的手机验证码：756978
