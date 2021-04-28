@@ -1,6 +1,6 @@
 package com.junmoyu.singleton.serializable;
 
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * 懒汉式 - 线程安全，延迟加载
@@ -11,31 +11,24 @@ import java.io.Serializable;
  */
 public class ThreadSafeLazyLoadedSingleton implements Serializable {
 
-    private static final long serialVersionUID = 2675885695793844180L;
-
-    /**
-     * 加入 volatile 保证线程可见性，防止指令重排导致实例被多次实例化
-     * 否则线程不安全
-     */
-    private volatile static ThreadSafeLazyLoadedSingleton INSTANCE = null;
+    private static ThreadSafeLazyLoadedSingleton INSTANCE = null;
 
     /**
      * 私有构造方法
      */
     private ThreadSafeLazyLoadedSingleton() {
         // 防止通过反射进行实例化从而破坏单例
-        // 如不需要删除即可
+        // 最好放在开头，如不需要删除即可
         if (INSTANCE != null) {
             throw new IllegalStateException("Already initialized.");
         }
 
-        System.out.println(getClass().getCanonicalName() + " 被实例化，内存地址为：" + hashCode());
+        System.out.println(getClass().getCanonicalName() + " 被实例化，hashCode：" + hashCode());
     }
 
     /**
-     * 线程安全的实例化，使用双重检查，避免每次获取实例时都加锁
-     * 但这种模式依然是有隐患的，INSTANCE 常量必须添加 volatile 关键字才能避免指令重排，保持线程可见性
-     * 而 volatile 在 JDK 1.5 之后才支持
+     * 可被用户调用以获取类的实例 - 线程安全
+     * 使用 synchronized 加锁以实现线程安全
      *
      * @return 单例实例
      */
@@ -54,5 +47,21 @@ public class ThreadSafeLazyLoadedSingleton implements Serializable {
      */
     private Object readResolve() {
         return INSTANCE;
+    }
+
+    public static void main(String[] args) throws Exception {
+        // 反序列化测试
+        // 将对象写入文件
+        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("tempFile"));
+        StaticInnerClassSingleton osInstance = StaticInnerClassSingleton.getInstance();
+        System.out.println("反序列化测试：osInstance hashCode：" + "@" + osInstance.hashCode());
+        os.writeObject(osInstance);
+
+        // 从文件中读取对象
+        File file = new File("tempFile");
+        ObjectInputStream is = new ObjectInputStream(new FileInputStream(file));
+        StaticInnerClassSingleton isInstance = (StaticInnerClassSingleton) is.readObject();
+        // 查看 hashCode 是否相同
+        System.out.println("反序列化测试：isInstance hashCode：" + "@" + isInstance.hashCode());
     }
 }
