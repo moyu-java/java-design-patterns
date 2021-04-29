@@ -29,7 +29,7 @@
    - [ ] 代理模式
 
 3. 行为型模式
-   - [ ] 模版方法模式
+   - [x] [模版方法模式](https://junmoyu.com/2021/design-patterns-template-method/)
    - [ ] 命令模式
    - [ ] 迭代器模式
    - [ ] 观察者模式
