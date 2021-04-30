@@ -151,7 +151,7 @@ public class EagerlySingleton {
     /**
      * 初始化静态实例
      */
-    private static EagerlySingleton INSTANCE = new EagerlySingleton();
+    private static final EagerlySingleton INSTANCE = new EagerlySingleton();
 
     /**
      * 私有构造函数，保证无法从外部进行实例化
@@ -180,7 +180,7 @@ public class EagerlySingleton {
 }
 ```
 
-**饿汉式单例**提供了已被实例化的静态实例 `INSTANCE`，所以不存在多个线程创建多个实例的情况，所以它是**线程安全**的。
+**饿汉式单例**提供了已被实例化的静态实例 `INSTANCE`，所以不存在多个线程创建多个实例的情况，所以它是**线程安全**的。（即使多线程同时调用`getInstance()`，获取也是已经实例化的对象，并没有再重新创建）
 
 这种单例模式的缺点是即使单例没有被使用，对象也会被创建，占用资源（但其实并不会占用太多资源，视具体业务情况而定）。运行`main()`方法测试一下。
 
