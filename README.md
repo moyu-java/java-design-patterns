@@ -13,7 +13,7 @@
 设计模式共有 23 种设计模式，分为三大类：创建型模式（Creative Patterns）、结构型模式（Structural Patterns）、行为型模式（Behavioral Patterns）。
 
 1. 创建型模式
-   - [x] [单例模式](https://junmoyu.com/2021/design-patterns-singleton/)
+   - [x] [单例模式](https://junmoyu.com/java/design-patterns-singleton/)
    - [ ] 工厂模式
    - [ ] 抽象工厂模式
    - [ ] 建造者模式
@@ -29,7 +29,7 @@
    - [ ] 代理模式
 
 3. 行为型模式
-   - [x] [模版方法模式](https://junmoyu.com/2021/design-patterns-template-method/)
+   - [x] [模版方法模式](https://junmoyu.com/java/design-patterns-template-method/)
    - [ ] 命令模式
    - [ ] 迭代器模式
    - [ ] 观察者模式

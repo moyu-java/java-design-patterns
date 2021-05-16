@@ -734,7 +734,3 @@ public class ErrorContext {
 因为枚举实现的单例模式其实也属于饿汉式，所以如果在实例化时需要执行耗时操作的话，则不建议使用。
 
 那么除此之外较好的单例实现还有**静态内部类**的实现，以及**双重校验锁**的实现，可以根据自己的业务需要灵活选择。
-
-[项目源代码地址: https://github.com/moyu-jun/java-design-patterns](https://github.com/moyu-jun/java-design-patterns)
-
-[更多 Java 设计模式系列文章: https://junmoyu.com/2021/design-patterns](https://junmoyu.com/2021/design-patterns/)
