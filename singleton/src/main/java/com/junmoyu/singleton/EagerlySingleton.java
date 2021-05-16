@@ -14,7 +14,7 @@ public class EagerlySingleton {
     /**
      * 初始化静态实例
      */
-    private static EagerlySingleton INSTANCE = new EagerlySingleton();
+    private static final EagerlySingleton INSTANCE = new EagerlySingleton();
 
     /**
      * 私有构造函数，保证无法从外部进行实例化
