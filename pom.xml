@@ -14,6 +14,7 @@
         <module>builder</module>
         <module>factory-method</module>
         <module>abstract-factory</module>
+        <module>proxy</module>
     </modules>
 
     <properties>

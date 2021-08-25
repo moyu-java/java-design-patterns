@@ -9,5 +9,8 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>factory-method</artifactId>
+    <artifactId>proxy</artifactId>
+
+    <description>代理模式</description>
+
 </project>
