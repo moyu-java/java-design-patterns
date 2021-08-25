@@ -27,7 +27,12 @@ public abstract class Handler {
      */
     public abstract boolean process(LeaveRequest request);
 
-    public void setNextHandler(Handler nextHandler) {
-        this.nextHandler = nextHandler;
+    public Handler next(){
+        return nextHandler;
+    }
+
+    public Handler appendNext(Handler next){
+        this.nextHandler = next;
+        return this;
     }
 }
