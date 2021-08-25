@@ -15,6 +15,7 @@
         <module>factory-method</module>
         <module>abstract-factory</module>
         <module>proxy</module>
+        <module>responsibility-chain</module>
     </modules>
 
     <properties>
